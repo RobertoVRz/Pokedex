@@ -2,7 +2,7 @@ import React from "react";
 
 function Navbar() {
   return (
-    <div className="navbar bg-base-100 fixed">
+    <div className="navbar bg-red-500 fixed">
       <div className="navbar-start">
         <div className="dropdown">
           <label tabIndex={0} className="btn btn-ghost btn-circle">
@@ -39,12 +39,13 @@ function Navbar() {
       </div>
       <div className="navbar-center">
         <div className="form-control">
-          <input
-            type="text"
-            placeholder="Search"
-            className="input input-bordered w-72 md:w-80"
-          />
+          <input type="text" className="input input-bordered w-72 md:w-80" />
         </div>
+        <input
+          type="button"
+          value="Buscar"
+          className="input input-bordered bg-blue-600 py-2 px-5"
+        />
       </div>
       <div className="navbar-end"></div>
     </div>
