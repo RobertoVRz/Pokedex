@@ -5,20 +5,19 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   return (
     <div
-      className="hero min-h-screen"
+      className="hero min-h-screen bg-white"
       style={{
         backgroundImage: `url("/images/stock/photo-1507358522600-9f71e620c44e.jpg")`,
       }}
     >
       <div className="hero-content text-center text-neutral-content">
-        <div className="max-w-md">
-          <h1 className="mb-5 text-5xl font-bold">Hello there</h1>
-          <p className="mb-5">
-            Provident cupiditate voluptatem et in. Quaerat fugiat ut assumenda
-            excepturi exercitationem quasi. In deleniti eaque aut repudiandae et
-            a id nisi.
-          </p>
-          <button className="btn btn-primary">Get Started</button>
+        <div className="bg-zinc-300 w-96 h-48 flex flex-row justify-around items-center">
+          <div className="bg-black w-20 h-20"></div>
+          <div>
+            <h2>Nombre</h2>
+            <h2>ID</h2>
+            <h2>Tipo</h2>
+          </div>
         </div>
       </div>
     </div>
