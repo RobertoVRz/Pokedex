@@ -1,12 +1,14 @@
 import React from "react";
 import Image from "next/image";
 
-function CardPokemon() {
+function CardPokemon({ pokemon }) {
   return (
-    <div className="card w-full bg-base-100 shadow-xl">
+    <div className="card w-40 m-5 bg-base-100 shadow-xl">
       <figure className="px-10 mt-10">
         <Image
-          src="https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png"
+          src={`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/${
+            pokemon.url.split("/")[6]
+          }.png`}
           alt="Shoes"
           className="object-cover"
           width={100}
@@ -14,10 +16,15 @@ function CardPokemon() {
         />
       </figure>
       <div className="card-body items-center text-center">
-        <h2 className="card-title">Shoes!</h2>
-
+        <h2 className="card-title">{pokemon.name}</h2>
         <div className="card-actions">
-          <button className="btn btn-primary">Buy Now</button>
+          <a
+            role="button"
+            className="btn"
+            href={`/pokemon/${pokemon.url.split("/")[6]}`}
+          >
+            Ver info
+          </a>
         </div>
       </div>
     </div>
