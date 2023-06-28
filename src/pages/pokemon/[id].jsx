@@ -12,6 +12,12 @@ export default function Pokemon() {
         .then((data) => {
           setPokemon(data);
         });
+
+      fetch(`https://pokeapi.co/api/v2/evolution-chain/${router.query.id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          console.log(data);
+        });
     }
   }, [router.query.id]);
 
