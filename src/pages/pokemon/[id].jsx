@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
+
 export default function Pokemon() {
   const [pokemon, setPokemon] = useState({});
   const [specieInfo, setSpecieInfo] = useState({});
@@ -27,13 +28,11 @@ export default function Pokemon() {
   }, [router.query.id]);
 
   useEffect(() => {
-    console.log(specieInfo);
     if (specieInfo?.evolution_chain) {
       const url = specieInfo.evolution_chain.url;
       fetch(`${url}`)
         .then((res) => res.json())
         .then(async (data) => {
-          console.log(data);
           const evolucion = await getEvolucion(data.chain);
           setEvoluciones(evolucion);
         })
@@ -44,10 +43,9 @@ export default function Pokemon() {
   }, [specieInfo]);
 
   const getSprite = (url) => {
-    console.log(url);
     return new Promise((resolve, reject) => {
       const id = url.split("/")[6];
-      console.log(id);
+
       fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
         .then((res) => res.json())
         .then((data) => {
@@ -63,7 +61,6 @@ export default function Pokemon() {
   };
 
   const getEvolucion = async (evolucion) => {
-    console.log(evolucion);
     const evoluciones = [];
 
     if (evolucion.species?.name) {
@@ -76,7 +73,6 @@ export default function Pokemon() {
       }
       while (evolucion.evolves_to.length > 0) {
         evolucion = evolucion.evolves_to[0];
-        console.log(evolucion);
         const { name, url } = evolucion.species;
         try {
           const sprite = await getSprite(evolucion.species.url);
@@ -89,55 +85,74 @@ export default function Pokemon() {
     return evoluciones;
   };
 
+  const capitalizeFirstLetter = (string) => {
+    return string?.charAt(0).toUpperCase() + string?.slice(1);
+  };
+
   return (
-    <div className="h-screen w-screen overflow-y-auto bg-white text-black p-36">
-      {<h1 className="text-3xl">{pokemon.name}</h1>}
-      <div className="flex flex-row">
+    <div className="h-screen w-screen overflow-y-auto bg-[#EBF5F0] text-black py-20 px-5 lg:px-20">
+      <div className="card bg-white shadow-2xl flex flex-col lg:flex-row justify-center">
         <Image
           width={350}
           height={200}
           src={pokemon.sprites?.other?.["official-artwork"]?.front_default}
           alt={pokemon.name}
         />
-        <div className="text-xl bg-blue-400 m-10 p-20">
-          <p>Altura: {pokemon.height}</p>
-          <p>Peso: {pokemon.weight}</p>
-          <p>
-            Tipo:{" "}
-            {pokemon?.types?.map((tipo) => (
-              <span className="mr-2" key={tipo.type.name}>
-                {tipo.type.name}
-              </span>
-            ))}
-          </p>
-          <p>
-            Habilidades:{" "}
-            {pokemon?.abilities?.map((habilidad) => (
-              <span className="mr-2" key={habilidad.ability.name}>
-                {habilidad.ability.name}
-              </span>
-            ))}
-          </p>
+        <div className="card  w-96">
+          <div className="card-body">
+            <h1 className="text-3xl">{capitalizeFirstLetter(pokemon.name)}</h1>
+            <div className="flex items-center">
+              <h2 className="card-title mr-2">Altura:</h2>
+              <p className="text-xl">{pokemon.height}</p>
+            </div>
+            <div className="flex items-center">
+              <h2 className="card-title mr-2">Peso:</h2>
+              <p className="text-xl">{pokemon.weight}</p>
+            </div>
+            <div className="flex items-center">
+              <h2 className="card-title mr-2">Tipo:</h2>
+              {pokemon?.types &&
+                pokemon?.types?.map((tipo) => (
+                  <div className="badge badge-outline mr-2">
+                    {capitalizeFirstLetter(tipo.type.name)}
+                  </div>
+                ))}
+            </div>
+            <div className="flex items-center">
+              <h2 className="card-title mr-2">Habilidades:</h2>
+              {pokemon?.abilities &&
+                pokemon?.abilities?.map((habilidad) => (
+                  <div className="badge badge-outline mr-2">
+                    {capitalizeFirstLetter(habilidad.ability.name)}
+                  </div>
+                ))}
+            </div>
+          </div>
         </div>
       </div>
-      <div className="bg-gray-300 w-1/2">
-        <h1 className="text-2xl">Estadísticas</h1>
+      <div className="card bg-white shadow-2xl my-5 p-10">
+        <h1 className="text-3xl mb-5 text-center">Estadísticas</h1>
       </div>
-      <div className="flex flex-row">
-        {evoluciones?.length &&
-          evoluciones?.map((evolucion, index) => (
-            <div className="text-center" key={index}>
-              <div className="border-black rounded-full border-2 m-5 p-2">
-                <Image
-                  alt=""
-                  src={evolucion?.sprite}
-                  width={200}
-                  height={200}
-                />
+      <div className="card bg-white shadow-2xl my-5 p-10">
+        <h1 className="text-3xl mb-5 text-center">Evoluciones</h1>
+        <div className="flex flex-wrap">
+          {evoluciones?.length &&
+            evoluciones?.map((evolucion, index) => (
+              <div className="text-center" key={index}>
+                <div className="border-black rounded-full border-2 m-5 p-2">
+                  <Image
+                    alt=""
+                    src={evolucion?.sprite}
+                    width={200}
+                    height={200}
+                  />
+                </div>
+                <h1 className="text-2xl">
+                  {capitalizeFirstLetter(evolucion?.name)}
+                </h1>
               </div>
-              <h1 className="text-2xl">{evolucion?.name}</h1>
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
     </div>
   );
