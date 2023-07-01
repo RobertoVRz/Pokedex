@@ -135,7 +135,7 @@ export default function Pokemon() {
       </div>
       <div className="card bg-white shadow-2xl my-5 p-10">
         <h1 className="text-3xl mb-5 text-center">Evoluciones</h1>
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap justify-center">
           {evoluciones?.length &&
             evoluciones?.map((evolucion, index) => (
               <div className="text-center" key={index}>
