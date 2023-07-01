@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { IoIosArrowForward } from "react-icons/io";
-import { resolve } from "styled-jsx/css";
 export default function Pokemon() {
   const [pokemon, setPokemon] = useState({});
+  const [specieInfo, setSpecieInfo] = useState({});
   const [evoluciones, setEvoluciones] = useState([]);
   const router = useRouter();
 
@@ -16,49 +15,80 @@ export default function Pokemon() {
           setPokemon(data);
         });
 
-      fetch(`https://pokeapi.co/api/v2/evolution-chain/${router.query.id}`)
+      fetch(`https://pokeapi.co/api/v2/pokemon-species/${router.query.id}`)
         .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          const evolucion = getEvolucion(data.chain);
-          console.log(evolucion);
-          setEvoluciones(evolucion);
+        .then(async (data) => {
+          setSpecieInfo(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching evolution chain:", error);
         });
     }
   }, [router.query.id]);
 
   useEffect(() => {
-    console.log(evoluciones);
-  }, [evoluciones]);
+    console.log(specieInfo);
+    if (specieInfo?.evolution_chain) {
+      const url = specieInfo.evolution_chain.url;
+      fetch(`${url}`)
+        .then((res) => res.json())
+        .then(async (data) => {
+          console.log(data);
+          const evolucion = await getEvolucion(data.chain);
+          setEvoluciones(evolucion);
+        })
+        .catch((error) => {
+          console.error("Error fetching evolution chain:", error);
+        });
+    }
+  }, [specieInfo]);
 
-  const getSprite = async (url) => {
-    let sprite = {};
+  const getSprite = (url) => {
     console.log(url);
-    const id = url.split("/")[6];
-    console.log(id);
-    await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data.sprites?.other?.["official-artwork"]?.front_default);
-        sprite = data.sprites?.other?.["official-artwork"]?.front_default;
-      });
-    console.log(sprite);
-    return sprite;
+    return new Promise((resolve, reject) => {
+      const id = url.split("/")[6];
+      console.log(id);
+      fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
+        .then((res) => res.json())
+        .then((data) => {
+          const sprite =
+            data.sprites?.other?.["official-artwork"]?.front_default;
+          resolve(sprite);
+        })
+        .catch((error) => {
+          console.error("Error fetching sprite:", error);
+          reject(error);
+        });
+    });
   };
 
   const getEvolucion = async (evolucion) => {
+    console.log(evolucion);
     const evoluciones = [];
+
     if (evolucion.species?.name) {
-      do {
-        evolucion = evolucion.evolves_to[0];
-        const { name, url } = evolucion.species;
+      const { name, url } = evolucion.species;
+      try {
         const sprite = await getSprite(evolucion.species.url);
         evoluciones.push({ name, url, sprite });
-      } while (evolucion.evolves_to.length > 0);
+      } catch (error) {
+        console.error("Error getting sprite:", error);
+      }
+      while (evolucion.evolves_to.length > 0) {
+        evolucion = evolucion.evolves_to[0];
+        console.log(evolucion);
+        const { name, url } = evolucion.species;
+        try {
+          const sprite = await getSprite(evolucion.species.url);
+          evoluciones.push({ name, url, sprite });
+        } catch (error) {
+          console.error("Error getting sprite:", error);
+        }
+      }
     }
-    console.log(evoluciones);
     return evoluciones;
   };
+
   return (
     <div className="h-screen w-screen overflow-y-auto bg-white text-black p-36">
       {<h1 className="text-3xl">{pokemon.name}</h1>}
@@ -94,24 +124,13 @@ export default function Pokemon() {
         <h1 className="text-2xl">Estadísticas</h1>
       </div>
       <div className="flex flex-row">
-        <div className="text-center">
-          <div className="border-black rounded-full border-2 m-5 p-2">
-            <Image
-              alt=""
-              src={pokemon.sprites?.other?.["official-artwork"]?.front_default}
-              width={200}
-              height={200}
-            />
-          </div>
-          {<h1 className="text-2xl">{pokemon.name}</h1>}
-        </div>
         {evoluciones?.length &&
           evoluciones?.map((evolucion, index) => (
             <div className="text-center" key={index}>
               <div className="border-black rounded-full border-2 m-5 p-2">
                 <Image
                   alt=""
-                  src={evolucion?.sprite?.url}
+                  src={evolucion?.sprite}
                   width={200}
                   height={200}
                 />
