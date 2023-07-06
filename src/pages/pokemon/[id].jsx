@@ -90,8 +90,8 @@ export default function Pokemon() {
   };
 
   return (
-    <div className="h-screen w-screen overflow-y-auto bg-[#EBF5F0] text-black py-20 px-5 lg:px-20">
-      <div className="card bg-white shadow-2xl flex flex-col lg:flex-row justify-center">
+    <div className="h-screen w-screen overflow-y-auto bg-[#EBF5F0] text-black p-20 px-5 lg:px-20">
+      <div className="card bg-white shadow-2xl flex flex-col lg:flex-row justify-center my-10 p-5 border border-gray-700">
         <Image
           width={350}
           height={200}
@@ -113,7 +113,7 @@ export default function Pokemon() {
               <h2 className="card-title mr-2">Tipo:</h2>
               {pokemon?.types &&
                 pokemon?.types?.map((tipo) => (
-                  <div className="badge badge-outline mr-2">
+                  <div key={tipo} className="badge badge-outline mr-2">
                     {capitalizeFirstLetter(tipo.type.name)}
                   </div>
                 ))}
@@ -122,7 +122,7 @@ export default function Pokemon() {
               <h2 className="card-title mr-2">Habilidades:</h2>
               {pokemon?.abilities &&
                 pokemon?.abilities?.map((habilidad) => (
-                  <div className="badge badge-outline mr-2">
+                  <div key={habilidad} className="badge badge-outline mr-2">
                     {capitalizeFirstLetter(habilidad.ability.name)}
                   </div>
                 ))}
@@ -130,21 +130,40 @@ export default function Pokemon() {
           </div>
         </div>
       </div>
-      <div className="card bg-white shadow-2xl my-5 p-10">
+      <div className="card bg-white shadow-2xl my-5 p-10 border border-gray-700">
         <h1 className="text-3xl mb-5 text-center">Estadísticas</h1>
+        {pokemon?.stats &&
+          pokemon?.stats?.map((estadistica) => (
+            <div
+              key={estadistica}
+              className="badge badge-outline mr-2 mb-2 w-48 h-8 text-lg"
+            >
+              {capitalizeFirstLetter(estadistica.stat.name)}
+            </div>
+          ))}
+        {pokemon?.stats &&
+          pokemon?.stats?.map((base) => (
+            <span
+              key={base}
+              className="mr-2 mb-2 text-center text-lg bg-blue-400 w-48 rounded-lg"
+            >
+              {base.base_stat}
+            </span>
+          ))}
       </div>
-      <div className="card bg-white shadow-2xl my-5 p-10">
+      <div className="card bg-white shadow-2xl my-5 p-10 border border-gray-700">
         <h1 className="text-3xl mb-5 text-center">Evoluciones</h1>
-        <div className="flex flex-wrap">
+        <div className="flex flex-wrap justify-center">
           {evoluciones?.length &&
             evoluciones?.map((evolucion, index) => (
               <div className="text-center" key={index}>
-                <div className="border-black rounded-full border-2 m-5 p-2">
+                <div className="border-black rounded-full border-2 m-10 mb-2 p-5 shadow-2xl hover:bg-blue-200">
                   <Image
                     alt=""
                     src={evolucion?.sprite}
                     width={200}
                     height={200}
+                    className="hover:w-60 hover:h-60"
                   />
                 </div>
                 <h1 className="text-2xl">

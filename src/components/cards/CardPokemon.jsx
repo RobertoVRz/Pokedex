@@ -2,6 +2,10 @@ import React from "react";
 import Image from "next/image";
 
 function CardPokemon({ pokemon }) {
+  const capitalizeFirstLetter = (string) => {
+    return string?.charAt(0).toUpperCase() + string?.slice(1);
+  };
+
   return (
     <div className="card w-40 m-5 bg-base-100 shadow-xl">
       <figure className="px-10 mt-10">
@@ -16,7 +20,7 @@ function CardPokemon({ pokemon }) {
         />
       </figure>
       <div className="card-body items-center text-center">
-        <h2 className="card-title">{pokemon.name}</h2>
+        <h2 className="card-title">{capitalizeFirstLetter(pokemon.name)}</h2>
         <div className="card-actions">
           <a
             role="button"
