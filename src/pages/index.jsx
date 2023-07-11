@@ -50,7 +50,7 @@ export default function Home() {
             type="text"
             placeholder="Escribe el nombre del pokemon"
             ref={searchParam}
-            className="input input-bordered w-96 my-5"
+            className="input input-bordered w-96 my-5 text-white placeholder:text-white"
           />
           <button
             className={
@@ -69,7 +69,7 @@ export default function Home() {
           <FaSistrix />
         </button>
       </div>
-      <div className="flex flex-wrap">
+      <div className="flex flex-wrap justify-center">
         {pokemonList?.length > 0 &&
           pokemonList.map((pokemon, index) => (
             <CardPokemon pokemon={pokemon} key={index} />
