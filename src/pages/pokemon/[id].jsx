@@ -26,6 +26,8 @@ export default function Pokemon() {
   const [pokemon, setPokemon] = useState({});
   const [specieInfo, setSpecieInfo] = useState({});
   const [evoluciones, setEvoluciones] = useState([]);
+  const [specieInfo, setSpecieInfo] = useState({});
+  const [evoluciones, setEvoluciones] = useState([]);
   const router = useRouter();
 
   useEffect(() => {
@@ -37,7 +39,13 @@ export default function Pokemon() {
         });
 
       fetch(`https://pokeapi.co/api/v2/pokemon-species/${router.query.id}`)
+      fetch(`https://pokeapi.co/api/v2/pokemon-species/${router.query.id}`)
         .then((res) => res.json())
+        .then(async (data) => {
+          setSpecieInfo(data);
+        })
+        .catch((error) => {
+          console.error("Error fetching evolution chain:", error);
         .then(async (data) => {
           setSpecieInfo(data);
         })
